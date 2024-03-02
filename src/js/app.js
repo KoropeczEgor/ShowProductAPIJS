@@ -55,6 +55,17 @@ window.addEventListener("DOMContentLoaded", async () => {
       return data;
     } catch (error) {
       console.log(error);
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth": password,
+        },
+        body: JSON.stringify(body),
+      });
+      const data = await resp.json();
+
+      return data;
     }
   }
 
