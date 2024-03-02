@@ -1,6 +1,9 @@
 "use strict";
 window.addEventListener("DOMContentLoaded", async () => {
   const BASE_URL = "http://api.valantis.store:40000/";
+  const _apiKey = "Valantis";
+  const _date = new Date().toISOString().replace(/-/g, "").split("T")[0];
+  const password = md5(`${_apiKey}_${_date}`);
   const left = document.querySelector(".left");
   const right = document.querySelector(".right");
   const loading = document.querySelector(".loading");
@@ -38,21 +41,21 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
   async function apiRequest(url, body) {
-    const _apiKey = "Valantis";
-    const _date = new Date().toISOString().replace(/-/g, "").split("T")[0];
-    const password = md5(`${_apiKey}_${_date}`);
+    try {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth": password,
+        },
+        body: JSON.stringify(body),
+      });
+      const data = await resp.json();
 
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Auth": password,
-      },
-      body: JSON.stringify(body),
-    });
-    const data = await resp.json();
-
-    return data;
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function getProduct() {
